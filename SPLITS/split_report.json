@@ -1,0 +1,48 @@
+{
+  "Dataset completo": {
+    "rows": 72853,
+    "is_attack_counts": {
+      "1.0": 60314,
+      "0.0": 8898,
+      "<NA>": 3641
+    },
+    "is_attack_pct": {
+      "1.0": 82.79,
+      "0.0": 12.21,
+      "<NA>": 5.0
+    }
+  },
+  "Etiquetados (solo 0/1)": {
+    "rows": 69212,
+    "is_attack_counts": {
+      "1": 60314,
+      "0": 8898
+    },
+    "is_attack_pct": {
+      "1": 87.14,
+      "0": 12.86
+    }
+  },
+  "Train": {
+    "rows": 55369,
+    "is_attack_counts": {
+      "1": 48251,
+      "0": 7118
+    },
+    "is_attack_pct": {
+      "1": 87.14,
+      "0": 12.86
+    }
+  },
+  "Test": {
+    "rows": 13843,
+    "is_attack_counts": {
+      "1": 12063,
+      "0": 1780
+    },
+    "is_attack_pct": {
+      "1": 87.14,
+      "0": 12.86
+    }
+  }
+}

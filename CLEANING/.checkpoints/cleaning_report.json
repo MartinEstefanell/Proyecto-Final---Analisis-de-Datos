@@ -1,0 +1,367 @@
+{
+  "order": [
+    "01_comm_type",
+    "02_flow_intensity",
+    "03_payload_features",
+    "04_traffic_rate",
+    "05_tcp_control",
+    "06_efficiency_balance",
+    "07_burstiness_subflow"
+  ],
+  "modules": {
+    "01_comm_type": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "dropped_by_incoherence": 0,
+      "unknown_proto_count": 72853,
+      "unknown_service_count": 72853,
+      "comm_incoherent_kept": 0,
+      "notes": [
+        "proto/service/attack_type normalizados a minúsculas",
+        "puertos validados [0..65535]",
+        "coherencia service–proto–puerto: normal incoherente eliminado; attack/unknown conservado y marcado",
+        "bandera 'comm_incoherent' añadida"
+      ]
+    },
+    "02_flow_intensity": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "dropped_physical_invalid": 0,
+      "dropped_3sigma": 0,
+      "dropped_ratio_checks": {
+        "dropped_ratio_pbs": 0,
+        "dropped_ratio_pkts_rate": 0
+      },
+      "removed_redundant_columns": [],
+      "outliers_normals_cap_p99": {},
+      "artifacts_mode": "apply",
+      "intensity_cols_used": [],
+      "pca": {
+        "n_components": 0,
+        "explained_variance_ratio": []
+      },
+      "notes": [
+        "No hay columnas de intensidad suficientes para PCA; módulo 2 se limita a limpieza."
+      ]
+    },
+    "03_payload_features": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "directional_check": {
+        "dropped_rel_error_normal_pkts": 0,
+        "flagged_incoherent_attacks_pkts": 0
+      },
+      "payload_cols_used": [],
+      "artifacts_mode": "apply",
+      "log_cols": [],
+      "pca": {
+        "n_components": 0,
+        "explained_variance_ratio": []
+      },
+      "notes": [
+        "No se detectaron columnas payload; módulo 3 omitido."
+      ]
+    },
+    "04_traffic_rate": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "rate_cols_used": [],
+      "log_cols": [],
+      "imputed_with_median": true,
+      "standardized": true,
+      "pca": {
+        "n_components": 0,
+        "explained_variance_ratio": []
+      },
+      "artifacts_mode": "apply",
+      "notes": [
+        "No se detectaron columnas de ritmo; módulo 4 omitido."
+      ]
+    },
+    "05_tcp_control": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "fixed_negatives_to_nan": 0,
+      "flag_counts_rounded_to_int": 0,
+      "drops": {
+        "non_tcp_with_flags_dropped": 0,
+        "non_tcp_with_flags_flagged": 66998,
+        "syn_and_rst_dropped": 0,
+        "syn_and_rst_flagged": 57819,
+        "rst_and_ack_without_syn_dropped": 0,
+        "rst_and_ack_without_syn_flagged": 2842,
+        "flags_gt_packets_dropped": 0,
+        "flags_gt_packets_flagged": 0
+      },
+      "percentiles_by_class": {
+        "normal": {},
+        "attack_unknown": {
+          "fwd_init_window_size": {
+            "p1": 0.0,
+            "p99": 655350.0
+          },
+          "bwd_init_window_size": {
+            "p1": 0.0,
+            "p99": 65160.0
+          },
+          "fwd_last_window_size": {
+            "p1": 0.0,
+            "p99": 502.0
+          },
+          "flow_SYN_flag_count": {
+            "p1": 0.0,
+            "p99": 2.0
+          },
+          "flow_ACK_flag_count": {
+            "p1": 0.0,
+            "p99": 27.0
+          },
+          "flow_FIN_flag_count": {
+            "p1": 0.0,
+            "p99": 2.0
+          },
+          "flow_RST_flag_count": {
+            "p1": 0.0,
+            "p99": 2.0
+          },
+          "fwd_PSH_flag_count": {
+            "p1": 0.0,
+            "p99": 5.0
+          },
+          "bwd_PSH_flag_count": {
+            "p1": 0.0,
+            "p99": 6.0
+          }
+        }
+      },
+      "window_robust_stats": {
+        "fwd_init_window_size": {
+          "median": 64.0,
+          "iqr": 0.0
+        },
+        "bwd_init_window_size": {
+          "median": 0.0,
+          "iqr": 0.0
+        },
+        "fwd_last_window_size": {
+          "median": 64.0,
+          "iqr": 0.0
+        }
+      },
+      "pca": {
+        "n_components": 2,
+        "explained_variance_ratio": [
+          0.6370852385323575,
+          0.19625528026046798
+        ]
+      },
+      "notes": [
+        "Artefactos TCP aplicados (sin reentrenar).",
+        "Ventanas crudas removidas: [] (se conservan *_r y flags)."
+      ]
+    },
+    "06_efficiency_balance": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "derived_cols": [],
+      "bounds_check": {
+        "dropped_bounds": 0,
+        "flagged_bounds": 0
+      },
+      "cap_normals": {},
+      "artifacts_mode": "fit",
+      "pca": {
+        "n_components": 0,
+        "explained_variance_ratio": []
+      },
+      "notes": [
+        "Pocas columnas para PCA de eficiencia/balance; se salta PCA."
+      ]
+    },
+    "07_burstiness_subflow": {
+      "rows_before": 72853,
+      "rows_after": 72853,
+      "dropped": 0,
+      "label_normalization": {
+        "label_col": "attack_type",
+        "unique_labels_before": [
+          "unknown"
+        ],
+        "unique_labels_after": [
+          "unknown"
+        ]
+      },
+      "artifacts_mode": "apply",
+      "assembly": {
+        "dropped_ids": [
+          "id.orig_p",
+          "id.resp_p"
+        ],
+        "created_dummies": [
+          "proto__unknown",
+          "proto__udp",
+          "proto__tcp",
+          "proto____other__",
+          "service__unknown",
+          "service__dns",
+          "service__irc",
+          "service__dhcp",
+          "service__https",
+          "service__ntp",
+          "service__mqtt",
+          "service__http",
+          "service____other__"
+        ],
+        "dropped_constants": [
+          "fwd_init_window_size_r",
+          "bwd_init_window_size_r",
+          "fwd_last_window_size_r",
+          "tcp_pca_var_expl_total",
+          "proto____other__",
+          "service__dhcp",
+          "service__irc",
+          "service__ntp",
+          "service____other__"
+        ],
+        "dropped_duplicates": [],
+        "dropped_correlated": [],
+        "imputed_numerics": [
+          "Unnamed: 0",
+          "bwd_PSH_flag_count",
+          "bwd_URG_flag_count",
+          "bwd_bulk_bytes",
+          "bwd_bulk_rate",
+          "bwd_header_size_max",
+          "bwd_header_size_min",
+          "bwd_subflow_bytes",
+          "comm_incoherent",
+          "down_up_ratio",
+          "flow_ACK_flag_count",
+          "flow_CWR_flag_count",
+          "flow_ECE_flag_count",
+          "flow_FIN_flag_count",
+          "flow_RST_flag_count",
+          "flow_SYN_flag_count",
+          "flow_duration",
+          "fwd_PSH_flag_count",
+          "fwd_URG_flag_count",
+          "fwd_bulk_bytes",
+          "fwd_bulk_rate",
+          "fwd_header_size_max",
+          "fwd_header_size_min",
+          "fwd_subflow_bytes",
+          "intensity_pca_1",
+          "intensity_pca_2",
+          "intensity_pca_3",
+          "intensity_pca_4",
+          "payload_pca_1",
+          "payload_pca_2",
+          "payload_pca_3",
+          "proto__tcp",
+          "proto__udp",
+          "proto__unknown",
+          "rate_ratio_log",
+          "service__dns",
+          "service__http",
+          "service__https",
+          "service__mqtt",
+          "service__unknown",
+          "tcp_pca_1",
+          "tcp_pca_2",
+          "tcp_semantics_incoherent",
+          "traffic_pca_1",
+          "traffic_pca_2"
+        ],
+        "final_columns": [
+          "attack_type",
+          "is_attack",
+          "Unnamed: 0",
+          "flow_duration",
+          "down_up_ratio",
+          "fwd_header_size_min",
+          "fwd_header_size_max",
+          "bwd_header_size_min",
+          "bwd_header_size_max",
+          "flow_FIN_flag_count",
+          "flow_SYN_flag_count",
+          "flow_RST_flag_count",
+          "fwd_PSH_flag_count",
+          "bwd_PSH_flag_count",
+          "flow_ACK_flag_count",
+          "fwd_URG_flag_count",
+          "bwd_URG_flag_count",
+          "flow_CWR_flag_count",
+          "flow_ECE_flag_count",
+          "fwd_subflow_bytes",
+          "bwd_subflow_bytes",
+          "fwd_bulk_bytes",
+          "bwd_bulk_bytes",
+          "fwd_bulk_rate",
+          "bwd_bulk_rate",
+          "Attack_type",
+          "comm_incoherent",
+          "intensity_pca_1",
+          "intensity_pca_2",
+          "intensity_pca_3",
+          "intensity_pca_4",
+          "payload_pca_1",
+          "payload_pca_2",
+          "payload_pca_3",
+          "traffic_pca_1",
+          "traffic_pca_2",
+          "tcp_semantics_incoherent",
+          "tcp_pca_1",
+          "tcp_pca_2",
+          "rate_ratio_log",
+          "proto__unknown",
+          "proto__tcp",
+          "proto__udp",
+          "service__dns",
+          "service__unknown",
+          "service__http",
+          "service__https",
+          "service__mqtt"
+        ]
+      },
+      "notes": [
+        "Categóricas codificadas de forma estable (top-N + '__other__').",
+        "IDs/leakage removidos; constantes/duplicadas/colineales depuradas.",
+        "Imputación por mediana aplicada a numéricas restantes.",
+        "Columnas ordenadas y QA final sin NaN/Inf.",
+        "PCA disponible (si pca_out_dir fue provisto)."
+      ],
+      "pca": {
+        "n_rows": 72853,
+        "n_vars": 45,
+        "notes": [
+          "PCA ejecutado sin exportar archivos (pca_out_dir=None)."
+        ],
+        "explained_variance_%": [
+          31.85,
+          15.13,
+          9.04,
+          5.55,
+          5.03,
+          4.34,
+          4.14
+        ],
+        "cumulative_%": [
+          31.85,
+          46.98,
+          56.02,
+          61.57,
+          66.6,
+          70.94,
+          75.08
+        ],
+        "top3_cumulative_%": 56.02
+      }
+    }
+  }
+}

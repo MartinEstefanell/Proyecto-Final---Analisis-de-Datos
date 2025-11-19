@@ -23,7 +23,13 @@ from pathlib import Path
 # Lista de módulos EDA (crealos luego con su main(df, out_dir))
 MODULES = [
     "communication_type",
-    "intensity_size"
+    "intensity_size",
+    "payload_size",
+    "balance_efficiency",
+    "burstiness_subflow_1",
+    "burstiness_subflow_2",
+    "traffic_rate",
+    "tcp_controls",
 ]
 
 def parse_args(argv=None):
@@ -37,16 +43,41 @@ def ask_path_if_missing(path_str: str | None = None) -> str:
 
     import os
     if not os.path.exists(fixed_path):
-        raise FileNotFoundError(f"No se encontró el archivo CSV en: {fixed_path}")
+        raise FileNotFoundError(f"No se encontró el archivo en: {fixed_path}")
 
     return fixed_path
 def safe_import(module_name: str):
     """Importa un módulo sin romper la ejecución si no existe."""
+    # Try importing as a submodule of the EDA package first, then as a top-level module.
+    try:
+        # e.g. import EDA.burstiness_subflow
+        return importlib.import_module(f"EDA.{module_name}")
+    except ModuleNotFoundError:
+        pass
+    except Exception as e:
+        print(f"⚠️  Error importando EDA.{module_name}: {e}")
+        return None
+
     try:
         return importlib.import_module(module_name)
     except ModuleNotFoundError:
-        print(f"⚠️  Módulo no encontrado: {module_name} (se omite)")
-        return None
+        # Last resort: try loading from the EDA directory by file path
+        try:
+            from importlib import util
+            from pathlib import Path
+            eda_dir = Path(__file__).parent
+            candidate = eda_dir / f"{module_name}.py"
+            if candidate.exists():
+                spec = util.spec_from_file_location(module_name, str(candidate))
+                mod = util.module_from_spec(spec)
+                spec.loader.exec_module(mod)  # type: ignore
+                return mod
+            else:
+                print(f"⚠️  Módulo no encontrado: {module_name} (se omite)")
+                return None
+        except Exception as e:
+            print(f"⚠️  Error cargando desde archivo {module_name}.py: {e}")
+            return None
     except Exception as e:
         print(f"⚠️  Error importando {module_name}: {e}")
         return None
@@ -78,9 +109,21 @@ def main():
     # Directorio base de EDA (donde está este script)
     eda_dir = Path(__file__).parent
 
-    # Cargar CSV tal cual (sin limpieza)
-    print(f"📥 Cargando CSV: {csv_file}")
-    df = pd.read_csv(csv_file, low_memory=False)
+    # Cargar archivo (detectar si es CSV o Excel)
+    print(f"📥 Cargando archivo: {csv_file}")
+    
+    if csv_file.suffix.lower() in ['.xlsx', '.xls']:
+        df = pd.read_excel(csv_file)
+    else:
+        # Intentar con diferentes codificaciones para CSV
+        try:
+            df = pd.read_csv(csv_file, low_memory=False, encoding='utf-8')
+        except UnicodeDecodeError:
+            try:
+                df = pd.read_csv(csv_file, low_memory=False, encoding='latin-1')
+            except:
+                df = pd.read_csv(csv_file, low_memory=False, encoding='iso-8859-1')
+    
     print(f"✅ DataFrame cargado: {len(df):,} filas × {len(df.columns)} columnas")
 
     # Importar y despachar a cada módulo con su carpeta específica
@@ -88,7 +131,7 @@ def main():
         mod = safe_import(name)
         call_main_if_exists(mod, df, name, eda_dir)
 
-    print(f"🎯 EDA finalizado. Salidas en carpetas EDA/Outputs_{{módulo}}")
+    print(f" EDA finalizado. Salidas en carpetas EDA/Outputs_{{módulo}}")
 
 if __name__ == "__main__":
     main()

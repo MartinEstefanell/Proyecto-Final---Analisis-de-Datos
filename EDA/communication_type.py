@@ -113,8 +113,9 @@ def _plot_services_stacked(service_by_attack: pd.DataFrame, out_dir: str):
     attacks = svc_sel.get("attack", pd.Series([0]*len(x), index=svc_sel.index)).values
 
     fig = plt.figure()
-    plt.bar(x, normals, 0.6, label="Normal")
-    plt.bar(x, attacks, 0.6, bottom=normals, label="Attack")
+    # Colors: normal -> green, attack -> red
+    plt.bar(x, normals, 0.6, label="Normal", color="#43A047")
+    plt.bar(x, attacks, 0.6, bottom=normals, label="Attack", color="#F44336")
     plt.xticks(x, svc_sel.index.astype(str), rotation=60, ha="right")
     plt.xlabel("Service (Top 12)")
     plt.ylabel("Count")
@@ -144,13 +145,7 @@ def _plot_full_heatmap(df: pd.DataFrame, out_dir: str, proto_col: str, service_c
     cbar = fig.colorbar(im, ax=ax)
     cbar.ax.set_ylabel("Count", rotation=-90, va="bottom")
 
-    vals = contingency.values
-    if vals.shape[0] <= 60 and vals.shape[1] <= 60:
-        for i in range(vals.shape[0]):
-            for j in range(vals.shape[1]):
-                v = int(vals[i, j])
-                if v > 0:
-                    ax.text(j, i, str(v), ha="center", va="center", fontsize=7)
+    # Se eliminan los números en las celdas del heatmap
 
     _save_plot(fig, out_dir, "eda_heatmap_servicio_vs_proto_full.png")
 
@@ -219,4 +214,4 @@ def main(df: pd.DataFrame, out_dir: str | None = None):
     if not service_by_attack.empty:
         _plot_services_stacked(service_by_attack, out_dir)
 
-    print(f"\n✅ communication_type listo. Salidas en: {os.path.abspath(out_dir)}")
+    print(f"\ communication_type listo. Salidas en: {os.path.abspath(out_dir)}")
